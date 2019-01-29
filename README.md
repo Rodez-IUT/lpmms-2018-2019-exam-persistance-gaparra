@@ -37,6 +37,46 @@ Il est strictement interdit de modifier le code contenu dans les classes de test
 
 Récupérez le contenu du fichier ENONCE.md disponible à l'URL fourni par votre enseignant et insérez le à la suite de ce fichier 
 
+Introduction
+
+Récupérez le contenu du fichier "ZEvaluationLPMMSTest.java" disponible à l'adresse suivante et insérez le dans votre fichier "ZEvaluationLPMMSTest.java". Étudiez le code de la classe "ZEvaluationLPMMSTest". Votre travail consistera à faire en sorte que tous les tests commentés de cette classe passent en plus de tous les autres.
+Partie 1 - Gestion améliorée de la sauvegarde des objets métiers (7 points)
+
+Cette partie vise à évaluer votre capacité à faire un bon usage de la méthode "EntityManager.merge(...)".
+
+    Décommentez le test "testSaveDetachedEnterprise" et modifiez le code principal de votre application pour faire en sorte que le test "testSaveDetachedEnterprise" passe. Vérifiez que l'ensemble des tests passent toujours. Si ce n'est pas le cas, modifiez votre code jusqu'à obtenir l'ensemble des tests au vert.
+
+    La méthode "EnterpriseProjectService.saveProjectForEnterprise(Project project)" contient l'instruction "entityManager.flush()". En étudiant la documentation de l'API JPA, décrivez quelle garantie apporte cette instruction pour le bon fonctionnement de la méthode.
+
+    
+    Cette instruction permet de synchroniser le contexte de persistence avec la base de données, elle force les données à être persistantes dans la bdd immédiatement
+    
+
+    Décommentez le test "testSaveDetachedProject" et modifiez le code principal de votre application pour faire en sorte que le test "testSaveDetachedProject" passe. Vérifiez que l'ensemble des tests passent toujours. Si ce n'est pas le cas, modifiez votre code jusqu'à obtenir l'ensemble des tests au vert.
+
+Partie 2. Gestion du changement d'entreprise d'un projet (6 points)
+
+    Décommentez le test "testSaveOfProjectAfterEnterpriseSwitch" et modifiez le code principal de votre application pour faire en sorte que le test "testSaveOfProjectAfterEnterpriseSwitch" passe. Vérifiez que l'ensemble des tests passent toujours. Si ce n'est pas le cas, modifiez votre code jusqu'à obtenir l'ensemble des tests au vert.
+
+    Le test "testSaveOfProjectAfterEnterpriseSwitch" contient l'assertion suivante : "assertThat(savedProject, is(project))". Que pouvez vous en déduire sur le comportement de la méthode "merge" ?
+
+  	la méthode merge permet d'enregistrer et de garder le même objet dans l'entityManager jusqu'a ce qu'un autre merge avec un autre objet soit réalisé.
+  	donc si un nouvel objet est créé à partir d'un ancien, ils seront strictement égaux.
+
+Partie 3. Optimistic locking (7 points)
+
+    Étudiez la documentation de l'annotation "jaxa.persistence.Version" de l'API JPA.
+
+    Décommentez le test "testProjectsAreVersionned" et modifiez le code principal de votre application pour faire en sorte que le test "testProjectsAreVersionned" passe. Vérifiez que l'ensemble des tests passent toujours. Si ce n'est pas le cas, modifiez votre code jusqu'à obtenir l'ensemble des tests au vert.
+
+    Décommentez le test "testOptimisticLockingOnConcurrentProjectModification" et modifiez, si nécessaire, le code principal de votre application pour faire en sorte que le test "testOptimisticLockingOnConcurrentProjectModification" passe. Vérifiez que l'ensemble des tests passent toujours. Si ce n'est pas le cas, modifiez votre code jusqu'à obtenir l'ensemble des tests au vert.
+
+    Expliquez clairement, en français, ce qui se passe dans le test "testOptimisticLockingOnConcurrentProjectModification".
+
+   on recupere un projet que l'on merge dans l'entityManager puis on modifi son titre et sa version via la methode update de jdbcTemplate, une fois le jdbcTemplate mit à jour on modifie le titre du projet via la methode setTitle puis on remerge le projet dans l'entityManager avant de le flush. 
+   Cette fonction retourne une exception de type optimistic lock exception si la version que l'on merge et la meme que celle qui etait deja merge
+
+
 
 
 

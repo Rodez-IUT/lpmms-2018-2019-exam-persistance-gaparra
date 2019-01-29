@@ -12,38 +12,48 @@ import java.util.List;
 @Transactional
 public class EnterpriseProjectService {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    public Project saveProjectForEnterprise(Project project, Enterprise enterprise) {
-        saveEnterprise(enterprise);
-        project.setEnterprise(enterprise);
-        enterprise.addProject(project);
-        entityManager.persist(project);
-        entityManager.flush();
-        return project;
-    }
+	public Project saveProjectForEnterprise(Project project, Enterprise enterprise) {
 
-    public Enterprise saveEnterprise(Enterprise enterprise) {
-        entityManager.persist(enterprise);
-        entityManager.flush();
-        return enterprise;
-    }
+		if (project.getEnterprise() != null) {
+			Enterprise le = project.getEnterprise();
+			le.removeProject(project);
+		}
 
-    public Project findProjectById(Long id) {
-        return entityManager.find(Project.class, id);
-    }
+		saveEnterprise(enterprise);
+		project.setEnterprise(enterprise);
+		enterprise.addProject(project);
+		entityManager.persist(project);
+		entityManager.flush();
 
-    public Enterprise findEnterpriseById(Long id) {
-        return entityManager.find(Enterprise.class, id);
-    }
+		return entityManager.merge(project);
+	}
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+	public Enterprise saveEnterprise(Enterprise enterprise) {
 
-    public List<Project> findAllProjects() {
-        TypedQuery<Project> query = entityManager.createQuery("select p from Project p join fetch p.enterprise order by p.title", Project.class);
-        return query.getResultList();
-    }
+		entityManager.persist(entityManager.merge(enterprise));
+		entityManager.flush();
+
+		return entityManager.merge(enterprise);
+	}
+
+	public Project findProjectById(Long id) {
+		return entityManager.find(Project.class, id);
+	}
+
+	public Enterprise findEnterpriseById(Long id) {
+		return entityManager.find(Enterprise.class, id);
+	}
+
+	public void setEntityManager(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
+
+	public List<Project> findAllProjects() {
+		TypedQuery<Project> query = entityManager
+				.createQuery("select p from Project p join fetch p.enterprise order by p.title", Project.class);
+		return query.getResultList();
+	}
 }

@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
+
 public class Project {
 
     @Id
@@ -21,6 +22,9 @@ public class Project {
     @NotNull
     @ManyToOne(cascade = {CascadeType.PERSIST})
     private Enterprise enterprise;
+    
+    @Version
+    private Long version = 0L;
 
     public Project() {}
 
@@ -57,4 +61,8 @@ public class Project {
     public void setEnterprise(Enterprise enterprise) {
         this.enterprise = enterprise;
     }
+
+	public Long getVersion() {
+		return version++;
+	}
 }
